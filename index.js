@@ -6,7 +6,7 @@ const fs = require('fs');
 const home = `Welcome to Get-A-Dino! This website pulls dinosaurs from https://github.com/hackclub/dinosaurs.
 
 GET /dinos - Get the ID and URL to a random dino
-GET /dinos/:id - Serve a dino by it's id
+GET /dinos/:id - Serve a dino by its id
 GET /info/:id - Get the info of a dino
 GET /random - Redirect to a random dino
 GET /dino.png - Serve a random dino as a raw PNG`;
