@@ -35,6 +35,6 @@ app.get('/dino.png', (req, res) => {
 download().then(downloaded => {
     dinos = downloaded;
     app.listen(3000, _ => {
-        console.log('Ready!');
+        console.log('Ready! (:3000)');
     });
 });
