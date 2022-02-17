@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "download-git-repo": "^3.0.2",
-    "express": "^4.17.2"
+    "express": "^4.17.3"
   },
   "devDependencies": {},
   "scripts": {
