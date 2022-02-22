@@ -61,7 +61,7 @@ app.get('/dinos', (req, res) => {
 
 app.get('/dinos/all', (req, res) => {
     let output = [];
-    for (const id of dinos) {
+    for (const id in dinos) {
         const name = dinos[id].substring(6, dinos[id].length - 4);
         const url = 'https://geta.dino.icu/dinos/' + id;
         const info = 'https://geta.dino.icu/info/' + id;
