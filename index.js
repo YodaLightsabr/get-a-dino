@@ -74,7 +74,16 @@ app.get('/dinos/all', (req, res) => {
     res.json(output);
 });
 
-app.get('/dinos/dictionary', (req, res) => {
+app.get('/dinos/all/images', (req, res) => {
+    let output = [];
+    for (const id in dinos) {
+        const url = 'https://geta.dino.icu/dinos/' + id;
+        output.push(url);
+    }
+    res.json(output);
+});
+
+app.get('/dinos/all/object', (req, res) => {
     res.json(dinos);
 });
 
