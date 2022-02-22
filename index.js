@@ -6,6 +6,7 @@ const fs = require('fs');
 const home = `Welcome to Get-A-Dino! This website pulls dinosaurs from https://github.com/hackclub/dinosaurs.
 
 GET /dinos - Get the ID and URL to a random dino
+GET /dinos/all - Get all dinos
 GET /dinos/:id - Serve a dino by its id
 GET /info/:id - Get the info of a dino
 GET /random - Redirect to a random dino
@@ -56,6 +57,25 @@ app.get('/dinos', (req, res) => {
     res.json({
         id, name, url, info, github
     });
+});
+
+app.get('/dinos/all', (req, res) => {
+    let output = [];
+    for (const id of dinos) {
+        const name = dinos[id].substring(6, dinos[id].length - 4);
+        const url = 'https://geta.dino.icu/dinos/' + id;
+        const info = 'https://geta.dino.icu/info/' + id;
+        const github = 'https://github.com/hackclub/dinosaurs/blob/main/' + name + '.png';
+        
+        output.push({
+            id, name, url, info, github
+        });
+    }
+    res.json(output);
+});
+
+app.get('/dinos/dictionary', (req, res) => {
+    res.json(dinos);
 });
 
 app.get('/random', (req, res) => {
