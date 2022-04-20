@@ -1,4 +1,5 @@
 # geta.dino.icu
+
 https://geta.dino.icu
 Get a dino!
 Gets dinos from https://github.com/hackclub/dinosaurs
