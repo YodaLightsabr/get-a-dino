@@ -24,7 +24,8 @@ function download () {
         });
         const dictionary = {};
         files.forEach(file => {
-            dictionary[crypto.createHash('md5').update('dinos/' + file).digest('hex').substring(0, 10)] = file; // Really bad method of generating IDs but at least it is unlikely for duplicates and will be the same each time a dinos.json is generated
+            // dictionary[crypto.createHash('md5').update('dinos/' + file).digest('hex').substring(0, 10)] = file; // Really bad method of generating IDs but at least it is unlikely for duplicates and will be the same each time a dinos.json is generated
+            dictionary[encodeURIComponent(file).toLowerCase().padStart(10, 'x').substring(0, 10)] = file;
         });
         resolve(dictionary);
     });

@@ -1,7 +1,7 @@
 {
   "rewrites": [
+    { "source": "/dino.png", "destination": "/api/dino-png" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/:path*", "destination": "/api/:path*" },
-    { "source": "/dino.png", "destination": "/api/dino-png" }
+    { "source": "/:path*", "destination": "/api/:path*" }
   ]
 }
