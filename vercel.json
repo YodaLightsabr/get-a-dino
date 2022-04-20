@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/*", "destination": "/api/*" },
+    { "source": "/dino.png", "destination": "/api/dino-png" }
+  ]
+}

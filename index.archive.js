@@ -1,13 +1,12 @@
-import crypto from 'crypto'
-import github from 'download-git-repo'
-import express from 'express'
-import fetch from 'node-fetch'
-import fs from 'fs'
+//
+//  Archive of original geta.dino.icu index.js in case something goes wrong with migration
+//
+const crypto = require('crypto');
+const github = require('download-git-repo');
+const express = require('express');
+const fs = require('fs');
 
-const home = `
-[!!!] Warning: Geta.Dino.Icu is temporarily under maintenance. [!!!]
-
-Welcome to Get-A-Dino! This website pulls dinosaurs from https://github.com/hackclub/dinosaurs.
+const home = `Welcome to Get-A-Dino! This website pulls dinosaurs from https://github.com/hackclub/dinosaurs.
 
 GET /dinos - Get the ID and URL to a random dino
 GET /dinos/all - Get all dinos
@@ -16,33 +15,25 @@ GET /info/:id - Get the info of a dino
 GET /random - Redirect to a random dino
 GET /dino.png - Serve a random dino as a raw PNG`;
 
-async function getByFileName (name, res) {
-    try {
-        const response = await fetch(`https://raw.githubusercontent.com/hackclub/dinosaurs/main/${name}`);
-        response.headers.forEach((v, n) => res.setHeader(n, v));
-        response.body.pipe(res);
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-async function json (...args) {
-    const response = await fetch(...args);
-    return await response.json();
-}
-
 function download () {
-    return new Promise(async (resolve, reject) => {
-        const fileTree = await json('https://api.github.com/repos/hackclub/dinosaurs/git/trees/main?recursive=1');
-        const files = fileTree.tree.map(file => file.path).filter(file => {
-            let isPng = file.endsWith('.png');
-            return isPng;
+    return new Promise((resolve, reject) => {
+        github('hackclub/dinosaurs', 'dinos', err => {
+            if (err) return reject(err);
+
+            const files = fs.readdirSync(__dirname + '/dinos').filter(file => {
+                let isPng = file.endsWith('.png');
+                return isPng;
+            }).map(file => 'dinos/' + file);
+
+            const dictionary = {};
+            files.forEach(file => {
+                dictionary[crypto.createHash('md5').update(file).digest('hex').substring(0, 10)] = file; // Really bad method of generating IDs but at least it is unlikely for duplicates and will be the same each time a dinos.json is generated
+            });
+
+            fs.writeFileSync(__dirname + '/dinos.json', JSON.stringify(dictionary, null, 4), 'utf8');
+
+            resolve(dictionary);
         });
-        const dictionary = {};
-        files.forEach(file => {
-            dictionary[crypto.createHash('md5').update('dinos/' + file).digest('hex').substring(0, 10)] = file; // Really bad method of generating IDs but at least it is unlikely for duplicates and will be the same each time a dinos.json is generated
-        });
-        resolve(dictionary);
     });
 }
 
@@ -64,7 +55,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/dino.png', (req, res) => {
-    getByFileName(Object.values(dinos)[random(0, Object.values(dinos).length - 1)], res);
+    res.sendFile(__dirname + '/' + Object.values(dinos)[random(0, Object.values(dinos).length - 1)]);
 });
 
 app.get('/dinos', (req, res) => {
@@ -115,12 +106,12 @@ app.get('/random', (req, res) => {
 });
 
 app.get('/dinos/:id', ({ params: { id } }, res) => {
-    // if (!fs.existsSync(__dirname + '/' + dinos[id])) return res.json({ error: 'Dino not found' });
-    getByFileName(dinos[id], res);
+    if (!fs.existsSync(__dirname + '/' + dinos[id])) return res.json({ error: 'Dino not found' });
+    res.sendFile(__dirname + '/' + dinos[id]);
 });
 
 app.get('/info/:id', ({ params: { id } }, res) => {
-    // if (!fs.existsSync(__dirname + '/' + dinos[id])) return res.json({ error: 'Dino not found' });
+    if (!fs.existsSync(__dirname + '/' + dinos[id])) return res.json({ error: 'Dino not found' });
     const name = dinos[id].substring(6, dinos[id].length - 4);
     const url = 'https://geta.dino.icu/dinos/' + id;
     const info = 'https://geta.dino.icu/info/' + id;
