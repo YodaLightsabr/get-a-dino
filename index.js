@@ -17,7 +17,10 @@ function download () {
         github('hackclub/dinosaurs', 'dinos', err => {
             if (err) return reject(err);
 
-            const files = fs.readdirSync(__dirname + '/dinos').filter(file => file.endsWith('.png')).map(file => 'dinos/' + file);
+            const files = fs.readdirSync(__dirname + '/dinos').filter(file => {
+                let isPng = file.endsWith('.png');
+                return isPng;
+            }).map(file => 'dinos/' + file);
 
             const dictionary = {};
             files.forEach(file => {
@@ -113,6 +116,7 @@ app.get('/info/:id', ({ params: { id } }, res) => {
 
 download().then(downloaded => {
     dinos = downloaded;
+    console.log('Downloaded. (' + Object.keys(dinos).length + ' dinos)');
     app.listen(3000, _ => {
         console.log('Ready! (:3000)');
     });
